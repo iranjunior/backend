@@ -1,0 +1,39 @@
+"use strict";
+
+/** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
+const Model = use("Model");
+
+class Hospital extends Model {
+
+  static boot() {
+    super.boot()
+  }
+  /**
+     * A relationship on hospitals is required for view
+     * work.
+     *
+     * @method users
+     *
+     * @return {Object}
+     
+  users (){
+      return this.hasMany('App/Models/User').pivotTable('hospital_users')
+  }
+  */
+
+  static boot() {
+    super.boot();
+  }
+
+  users() {
+    return this.hasMany("App/Models/User")
+  }
+  specialities() {
+    return this.belongsToMany("App/Models/Speciality", 'hospitals_id','specialities_id' , 'id', 'id').pivotTable("hospital_specialities")
+  }
+  vacancies(){
+    return this.hasMany("App/Models/Vacancy", 'id', 'hospitals_id')
+}
+}
+
+module.exports = Hospital;
