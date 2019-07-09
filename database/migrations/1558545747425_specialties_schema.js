@@ -14,7 +14,7 @@ class SpecialitiesSchema extends Schema {
   }
 
   down () {
-    this.drop('specialties')
+    this.drop('specialities')
   }
 }
 

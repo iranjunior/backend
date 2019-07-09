@@ -44,7 +44,7 @@ class User extends Model {
    * @return {Object}
    */
   hospitals() {
-    return this.belongsToMany("App/Models/Hospital")
+    return this.belongsToMany("App/Models/Hospital").pivotTable('hospital_users')
   }
 }
 

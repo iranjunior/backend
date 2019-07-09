@@ -9,27 +9,19 @@ class VacanciesSchema extends Schema {
       table.increments()
       table
       .integer('vacancies')
+      .defaultTo(0)
       .unsigned()
       table
       .integer('lim_vacancies')
+      .defaultTo(0)
       .unsigned()
       table
-      .integer('hospital_id')
-      .unsigned()
-      .notNullable()
-      .index('hospital_id')
-      table
-      .integer('speciality_id')
+      .integer('hospital_specialities')
       .unsigned()
       .notNullable()
-      .index('speciality_id')
       table
-       .foreign('hospital_id')
-       .references('hospital_specialities.hospitals_id')
-       .onDelete('cascade')
-      table
-       .foreign('speciality_id')
-       .references('hospital_specialities.specialities_id')
+       .foreign('hospital_specialities')
+       .references('hospital_specialities.id')
        .onDelete('cascade')
       
       table.timestamps()

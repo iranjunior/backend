@@ -6,15 +6,14 @@ const Schema = use('Schema')
 class HospitalSpecialitiesSchema extends Schema {
   up () {
     this.create('hospital_specialities', (table) => {
+      table.increments()
       table
       .integer('hospitals_id')
-      .unique()
       .notNullable()
       .unsigned()
       .index('hospitals_id')
       table
       .integer('specialities_id')
-      .unique()
       .notNullable()
       .unsigned()
       .index('specialities_id')

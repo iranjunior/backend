@@ -26,7 +26,7 @@ class Hospital extends Model {
   }
 
   users() {
-    return this.hasMany("App/Models/User")
+    return this.belongsToMany('App/Models/User').pivotTable('hospital_users')
   }
   specialities() {
     return this.belongsToMany("App/Models/Speciality", 'hospitals_id','specialities_id' , 'id', 'id').pivotTable("hospital_specialities")

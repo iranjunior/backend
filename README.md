@@ -26,3 +26,16 @@ Run the following command to run startup migrations.
 ```js
 adonis migration:run
 ```
+
+### Erros encontrados pelo caminho
+
+
+Relation "...." already exists 
+
+Esse erro era apresentado quando o este comando era executado :
+
+```js
+adonis migration:run
+```
+
+Para resolver precisei apenas tirar o o atributo .index de campo que estava apresentando erro

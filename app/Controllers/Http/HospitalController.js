@@ -6,6 +6,7 @@
 const Hospital = use("App/Models/Hospital");
 const Specialities = use('App/Models/Speciality')
 const Vacancies = use('App/Models/Vacancy')
+
 /**
  * Resourceful controller for interacting with hospitals
  */
