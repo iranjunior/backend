@@ -15,15 +15,8 @@ class Hospital extends Model {
      * @method users
      *
      * @return {Object}
-     
-  users (){
-      return this.hasMany('App/Models/User').pivotTable('hospital_users')
-  }
+  
   */
-
-  static boot() {
-    super.boot();
-  }
 
   users() {
     return this.belongsToMany('App/Models/User').pivotTable('hospital_users')
@@ -33,7 +26,7 @@ class Hospital extends Model {
   }
   vacancies(){
     return this.hasMany("App/Models/Vacancy", 'id', 'hospitals_id')
-}
+  }
 }
 
 module.exports = Hospital;

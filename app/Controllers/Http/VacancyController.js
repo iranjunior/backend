@@ -4,9 +4,9 @@
 /** @typedef {import('@adonisjs/framework/src/Response')} Response */
 /** @typedef {import('@adonisjs/framework/src/View')} View */
 
-const Vacancies = use('App/Models/Vacancy')
-const Speciality = use('App/Models/Specialty')
-
+const Vacancies = use('App/Models/Vacancy');
+const HS = use('App/Models/HospitalSpeciality');
+const Database = use('Database');
 /**
  * Resourceful controller for interacting with vacancies
  */
@@ -37,9 +37,16 @@ class VacancyController {
    */
   async store ({ request, response }) {
     
-    const {hospitals_id, specialties_id, vacancies, lim_vacancies } = request.all();
+    const {hospitals_id, specialities_id, vacancies, lim_vacancies } = request.all();
 
-    const vacancy = await Vacancies.create({ hospitals_id , specialties_id ,  vacancies, lim_vacancies })
+    const hospital_specialities = await Database.select('id')
+    .from('hospital_specialities')
+    .where({
+      hospitals_id,
+      specialities_id
+    })
+   //console.log("id: ", hospital_specialities[0].id)
+    const vacancy = await Vacancies.create({ hospital_specialities: hospital_specialities[0].id  ,  vacancies, lim_vacancies })
 
 
     

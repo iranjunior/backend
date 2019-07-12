@@ -5,6 +5,7 @@
 /** @typedef {import('@adonisjs/framework/src/View')} View */
 
 const Speciality = use('App/Models/Speciality')
+const Database = use('Database')
 /**
  * Resourceful controller for interacting with specialties
  */
@@ -18,10 +19,20 @@ class SpecialtyController {
    */
   async index ({ response }) {
   
-    try {
-
       //const specialties = await Speciality.all();
-      const specialties = await Speciality.query().with('hospitals').fetch();
+      const specialties = await Database.select(
+        'specialities.id as id',
+        'specialities.name as name',
+        'specialities.description as description',
+        'hospitals.name as hospital',
+        'vacancies.vacancies as vacancy',
+        'vacancies.lim_vacancies as lim_vacancy'
+      )
+      .from('specialities')
+      .leftJoin('hospital_specialities', 'hospital_specialities.specialities_id', 'specialities.id')
+      .leftJoin('hospitals', 'hospital_specialities.hospitals_id', 'hospitals.id')
+      .leftJoin('vacancies', 'vacancies.hospital_specialities','hospital_specialities.id')
+      .orderBy('specialities.id')
 
       response.status(200).json({
         status : "success",
@@ -30,13 +41,7 @@ class SpecialtyController {
       })
 
 
-    } catch (erro) {
-      response.status(200).json({
-        status : "error",
-        message : "Erro ao carregar",
-        error
-      })
-    }
+    
   
   }
 
@@ -78,12 +83,24 @@ class SpecialtyController {
       
       if(isSpecialty){
 
-        const specialty = await Speciality.query().with('hospitals').where('id', params.id).fetch()
+        const speciality = await Database.select(
+          'specialities.id as id',
+          'specialities.name as name',
+          'specialities.description as description',
+          'hospitals.name as hospital',
+          'vacancies.vacancies as vacancy',
+          'vacancies.lim_vacancies as lim_vacancy'
+        )
+        .from('specialities')
+        .leftJoin('hospital_specialities', 'hospital_specialities.specialities_id', 'specialities.id')
+        .leftJoin('hospitals', 'hospital_specialities.hospitals_id', 'hospitals.id')
+        .leftJoin('vacancies', 'vacancies.hospital_specialities','hospital_specialities.id')
+        .where('specialities.id', params.id)
 
         response.status(200).json({
           status : "success",
           message: "Especialidade Carregada",
-          specialty
+          speciality
         })
       }else{
         response.status(500).json({

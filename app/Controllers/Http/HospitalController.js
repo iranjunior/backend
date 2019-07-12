@@ -5,7 +5,7 @@
 
 const Hospital = use("App/Models/Hospital");
 const Specialities = use('App/Models/Speciality')
-const Vacancies = use('App/Models/Vacancy')
+const Database = use('Database')
 
 /**
  * Resourceful controller for interacting with hospitals
@@ -23,7 +23,21 @@ class HospitalController {
   async index({ response }) {
     //try {
     
-    const hospitals = await Hospital.all()
+    const hospitals = await Database.select(
+      'hospitals.id as id',
+      'hospitals.name as hospital', 
+      'hospitals.lat as lat',
+      'hospitals.lng as lng',
+      'hospitals.address as address',
+      'specialities.name as speciality', 
+      'vacancies.vacancies as vacancy'
+
+      )
+      .from('hospitals')
+      .leftJoin('hospital_specialities', 'hospital_specialities.hospitals_id', 'hospitals.id')
+      .leftJoin('specialities', 'hospital_specialities.specialities_id', 'specialities.id')
+      .leftJoin('vacancies', 'vacancies.hospital_specialities','hospital_specialities.id')
+      .orderBy('hospitals.id')
     
       response.status(200).json({
         status: "success",
@@ -48,20 +62,16 @@ class HospitalController {
    * @param {Response} ctx.response
    */
   async store({ request, response }) {
-    const { name, address, lat, lng, speciality, vacancies, lim_vacancies } = request.post();
+    const { name, address, lat, lng, speciality} = request.post();
 
     const hospital = await Hospital.create({ name, address, lat, lng });
    
-    if(speciality && vacancies && lim_vacancies){
-      
-      const vacancy = await Vacancies.create({
-        vacancies, 
-        lim_vacancies
-      })
-      
-      const specialities = await Specialities.find(speciality);
-      await hospital.specialities().attach([specialities.id]);
-      await hospital.vacancies().attach([vacancy.id]);
+    if(speciality){
+      if(Array.isArray(speciality)){
+            await hospital.specialities().attach(speciality)
+      } else{
+          await hospital.specialities().attach([specialities.id])
+      }
     }
 
     response.status(201).json({
@@ -84,7 +94,20 @@ class HospitalController {
     //try {
     const hospital_exist = Hospital.findBy("id", params.id);
     if (hospital_exist) {
-      const hospital = await Hospital.query().with('users').with('specialities.vacancies').where('id', params.id).fetch()
+      const hospital = await Database.select(
+        'hospitals.name as hospital', 
+        'hospitals.lat as lat',
+        'hospitals.lng as lng',
+        'hospitals.address as address',
+        'specialities.name as speciality', 
+        'vacancies.vacancies as vacancy'
+  
+        )
+        .from('hospitals')
+        .leftJoin('hospital_specialities', 'hospital_specialities.hospitals_id', 'hospitals.id')
+        .leftJoin('specialities', 'hospital_specialities.specialities_id', 'specialities.id')
+        .leftJoin('vacancies', 'vacancies.hospital_specialities','hospital_specialities.id')
+        .where('hospitals.id', params.id)
 
       response.status(200).json({
         status: "success",
@@ -115,7 +138,7 @@ class HospitalController {
    */
   async update({ params, request, response }) {
     //try {
-      const { name, lat, lng, address, speciality, vacancies, lim_vacancies } = request.all();
+      const { name, lat, lng, address, speciality } = request.all();
 
       const hospital = await Hospital.find( params.id );
       
@@ -124,22 +147,12 @@ class HospitalController {
       hospital.lng = lng || hospital.lng;
       hospital.address = address || hospital.address;
 
-    if (speciality && speciality != 0) {
-        const specialities = await Specialities.find(speciality);
-      
-        await hospital.specialities().attach([specialities.id]);
-        
-        if((vacancies && lim_vacancies) && (vacancies >= 0 && lim_vacancies >= 0)){
-          const vacancy = await Vacancy.create({
-            hospitals_id: hospital.id,
-            specialties_id: specialities.id,
-            vacancies,
-            lim_vacancies
-    
-          });
-          
-        }  
-      }
+    if (speciality) {
+      if(Array.isArray(speciality))  
+        await hospital.specialities().attach(speciality);
+      else
+        await hospital.specialities().attach([speciality]);
+    }
       
       
       await hospital.save();
@@ -167,21 +180,16 @@ class HospitalController {
    * @param {Response} ctx.response
    */
   async destroy({ params, response }) {
-    try {
-      const hospital = Hospital.findBy("id", params.id);
+   
+      const hospitals = Hospital.find(params.id);
 
-      await hospital.delete();
+      await hospitals.delete();
 
       response.status(200).json({
         status: "success",
         message: "Hospital apagado com sucesso"
       });
-    } catch (error) {
-      response.status(500).json({
-        status: "error",
-        error
-      });
-    }
+    
   }
 }
 
