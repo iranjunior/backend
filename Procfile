@@ -1,1 +1,1 @@
-web: adonis serve
+web: node --harmony-proxies server.js
