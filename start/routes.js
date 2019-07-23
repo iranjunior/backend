@@ -22,6 +22,9 @@ Route.group(() => {
   Route.post('/login', 'AuthController.login').middleware(['guest'])
   Route.post('/logout', 'AuthController.logout').middleware(['auth'])
 })
+Route.group(() => {
+  Route.get('/token/:id', 'TokenController.show').middleware(['guest'])
+})
 
 // Rota para Autenticação
 
@@ -59,6 +62,5 @@ Route.group(() => { Route.resource('speciality', 'SpecialtyController').apiOnly(
 
 Route.group(() => { Route.resource('vacancy', 'VacancyController').apiOnly().except(['update']) })
 
-Route.group(() => { Route.resource('token', 'TokenController').apiOnly() })
 
 
