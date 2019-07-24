@@ -39,7 +39,7 @@ Route.group(() => {
 
 Route.get("/", () => {
   return { welcome: "Olá mundo" };
-}).middleware(["auth"]);
+}).middleware(["guest"]);
 
 
 // Rotas para CRUD de hospitals com middleware de autenticação
