@@ -3,6 +3,15 @@ const User = use("App/Models/User");
 const Token = use("App/Models/Token");
 
 class AuthController {
+  /**
+   * Create/save a new specialty.
+   * POST specialties
+   *
+   * @param {object} ctx
+   * @param {Request} ctx.request
+   * @param {Response} ctx.response
+   */
+  
   async login({ request, auth }) {
     const { email, password } = request.all();
 
@@ -18,7 +27,23 @@ class AuthController {
 
     return token_create;
   }
- 
+/**
+   * Create/save a new specialty.
+   * POST specialties
+   *
+   * @param {object} ctx
+   * @param {Request} ctx.request
+   * @param {Response} ctx.response
+   */ 
+    async check({auth, response}){
+      const validator = await auth.check();
+
+      response.status(200).json({
+        status: "success",
+        message: "Usuario Logado",
+        validator
+      })
+    }
 }
 
 module.exports = AuthController;
