@@ -17,21 +17,11 @@
 const Route = use("Route");
 
 
-//Rotas de Login e Logout
+//Rotas de Autenticação
 Route.group(() => {
+  Route.get('/auth', 'TokenController.check').middleware(['auth'])
   Route.post('/login', 'AuthController.login').middleware(['guest'])
   Route.post('/logout', 'AuthController.logout').middleware(['auth'])
-})
-Route.group(() => {
-  Route.get('/token/:id', 'TokenController.show').middleware(['guest'])
-})
-
-// Rota para Autenticação
-
-
-Route.group(() => {
-  Route.post("/login", "AuthController.login").middleware(['guest']);
-  Route.get('/logout', 'AuthController.logout').middleware(['auth'])
 })
 
 // Rota Teste para acesso após login

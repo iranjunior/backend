@@ -27,6 +27,12 @@ class TokenController {
         }
         
     }
+    async check ({ request ,auth ,  response}){
+        const  validator = await auth.check();
+        response.status(200).json({
+            validator
+        })
+    }
 }
 
 module.exports = TokenController
