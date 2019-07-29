@@ -23,7 +23,7 @@ class HospitalController {
   async index({ response }) {
     //try {
     
-    const hospitals = await Database.select(
+    const  hospitals = await Database.select(
       'hospitals.id as id',
       'hospitals.name as hospital', 
       'hospitals.lat as lat',
@@ -38,7 +38,8 @@ class HospitalController {
       .leftJoin('specialities', 'hospital_specialities.specialities_id', 'specialities.id')
       .leftJoin('vacancies', 'vacancies.hospital_specialities','hospital_specialities.id')
       .orderBy('hospitals.id')
-    
+
+
       response.status(200).json({
         status: "success",
         message: "Hospitais carregados",
@@ -62,15 +63,15 @@ class HospitalController {
    * @param {Response} ctx.response
    */
   async store({ request, response }) {
-    const { name, address, lat, lng, speciality} = request.post();
+    const { name, address, lat, lng, specialities} = request.post();
 
     const hospital = await Hospital.create({ name, address, lat, lng });
    
-    if(speciality){
-      if(Array.isArray(speciality)){
-            await hospital.specialities().attach(speciality)
+    if(specialities){
+      if(Array.isArray(specialities)){
+            await hospital.specialities().attach(specialities)
       } else{
-          await hospital.specialities().attach([specialities.id])
+          await hospital.specialities().attach([specialities])
       }
     }
 
@@ -138,7 +139,7 @@ class HospitalController {
    */
   async update({ params, request, response }) {
     //try {
-      const { name, lat, lng, address, speciality } = request.all();
+      const { name, lat, lng, address, specialities } = request.all();
 
       const hospital = await Hospital.find( params.id );
       
@@ -147,11 +148,12 @@ class HospitalController {
       hospital.lng = lng || hospital.lng;
       hospital.address = address || hospital.address;
 
-    if (speciality) {
-      if(Array.isArray(speciality))  
-        await hospital.specialities().attach(speciality);
+      
+    if (specialities) {
+      if(Array.isArray(specialities))  
+        await hospital.specialities().attach(specialities);
       else
-        await hospital.specialities().attach([speciality]);
+        await hospital.specialities().attach([specialities]);
     }
       
       

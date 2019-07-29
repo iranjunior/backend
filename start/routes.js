@@ -17,21 +17,12 @@
 const Route = use("Route");
 
 
-//Rotas de Autenticação
+//Rotas de Login, Logout e Checagem de autenticação
 Route.group(() => {
-  Route.get('/auth', 'TokenController.check').middleware(['auth'])
+  Route.get('/auth', 'AuthController.check').middleware(['auth'])
   Route.post('/login', 'AuthController.login').middleware(['guest'])
   Route.post('/logout', 'AuthController.logout').middleware(['auth'])
 })
-
-// Rota Teste para acesso após login
-
-
-Route.get("/", () => {
-  return { welcome: "Olá mundo" };
-}).middleware(["guest"]);
-
-
 // Rotas para CRUD de hospitals com middleware de autenticação
 
 Route.group(() => {

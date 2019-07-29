@@ -60,15 +60,17 @@ class UserController {
   }
   async update({ request, auth, response }) {
     try {
-      const { username, email, hospital } = request.all();
+      const { username, email, hospitals } = request.all();
 
       const user = await auth.getUser();
 
       user.username = username || user.username;
       user.email = email || user.email;
-      if (hospital && hospital != 0) {
-        const hospitals = await Hospital.findBy("id", hospital);
-        await user.hospitals().attach([hospitals.id]);
+      if (hospitals && hospitals != 0) {
+        if(Array.isArray(hospitals))
+          await user.hospitals().attach(hospitals);
+        else
+        await user.hospitals().attach([hospitals]);
       }
 
       await user.save();
