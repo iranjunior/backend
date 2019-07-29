@@ -87,6 +87,21 @@ class UserController {
       });
     }
   }
+
+  async check ({auth, response}){
+    try {
+      const user = await auth.getUser()
+
+      response.status(200).json({
+        status: 'Sucesso',
+        message: 'Usuario logado',
+        user
+      })
+    } catch (error) {
+      
+    }
+  }
+
   async destroy({ auth, response }) {
     try {
       const user = auth.getUser();

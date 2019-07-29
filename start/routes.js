@@ -37,6 +37,7 @@ Route.group(() => {
       [['update', 'index', 'show', 'destroy'], ['auth']]
     ]))
     .apiOnly()
+  Route.get('user', 'UserController.check').middleware(['auth'])
 })
 
 Route.group(() => { Route.resource('speciality', 'SpecialtyController').apiOnly() }).middleware(['auth'])
