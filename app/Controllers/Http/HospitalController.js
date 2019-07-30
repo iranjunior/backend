@@ -21,7 +21,7 @@ class HospitalController {
    * @param {View} ctx.view
    */
   async index({ response }) {
-    //try {
+    try {
     
     const  hospitals = await Database.select(
       'hospitals.id as id',
@@ -30,14 +30,15 @@ class HospitalController {
       'hospitals.lng as lng',
       'hospitals.address as address',
       'specialities.name as speciality', 
-      'vacancies.vacancies as vacancy'
+      'vacancies.vacancies as vacancy',
+      'vacancies.id as key'
 
       )
       .from('hospitals')
       .leftJoin('hospital_specialities', 'hospital_specialities.hospitals_id', 'hospitals.id')
       .leftJoin('specialities', 'hospital_specialities.specialities_id', 'specialities.id')
       .leftJoin('vacancies', 'vacancies.hospital_specialities','hospital_specialities.id')
-      .orderBy('hospitals.id')
+      .orderBy('vacancies.id')
 
 
       response.status(200).json({
@@ -45,13 +46,13 @@ class HospitalController {
         message: "Hospitais carregados",
         hospitals
       });
-    /* } catch (error) {
+     } catch (error) {
       response.status(500).json({
         status: "error",
         message: "Falha ao Carregar hospitais",
         error
       });
-    } */
+    } 
   }
 
   /**
@@ -92,7 +93,7 @@ class HospitalController {
    */
 
   async show({ params, response }) {
-    //try {
+    try {
     const hospital_exist = Hospital.findBy("id", params.id);
     if (hospital_exist) {
       const hospital = await Database.select(
@@ -121,12 +122,12 @@ class HospitalController {
         message: "Hospital nao encontrado"
       });
     }
-    /*} catch (error) {
+  } catch (error) {
       response.status(500).json({
         status: "error",
         error
       });
-    }*/
+    }
   }
 
   /**
@@ -138,7 +139,7 @@ class HospitalController {
    * @param {Response} ctx.response
    */
   async update({ params, request, response }) {
-    //try {
+    try {
       const { name, lat, lng, address, specialities } = request.all();
 
       const hospital = await Hospital.find( params.id );
@@ -164,13 +165,13 @@ class HospitalController {
         message: "Hospital Atualizado com sucesso",
         hospital
       });
-    /*} catch (error) {
+    } catch (error) {
       response.status(500).json({
         status: "error",
         message: "Error ao atulizar hospital",
         error
       });
-    }*/
+    }
   }
 
   /**
